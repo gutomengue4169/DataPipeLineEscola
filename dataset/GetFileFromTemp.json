@@ -1,0 +1,184 @@
+{
+	"name": "GetFileFromTemp",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "datasharestorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "Temp",
+				"container": "datashare"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "_id",
+				"type": "String"
+			},
+			{
+				"name": "abr_nome",
+				"type": "String"
+			},
+			{
+				"name": "bairro",
+				"type": "String"
+			},
+			{
+				"name": "blog",
+				"type": "String"
+			},
+			{
+				"name": "cat_part_comunitaria",
+				"type": "String"
+			},
+			{
+				"name": "cat_part_confessional",
+				"type": "String"
+			},
+			{
+				"name": "cat_part_filantropica",
+				"type": "String"
+			},
+			{
+				"name": "cat_part_privada",
+				"type": "String"
+			},
+			{
+				"name": "cep",
+				"type": "String"
+			},
+			{
+				"name": "codigo",
+				"type": "String"
+			},
+			{
+				"name": "convenio_estadual",
+				"type": "String"
+			},
+			{
+				"name": "convenio_fasc",
+				"type": "String"
+			},
+			{
+				"name": "convenio_federal",
+				"type": "String"
+			},
+			{
+				"name": "convenio_municipal",
+				"type": "String"
+			},
+			{
+				"name": "data_extracao",
+				"type": "String"
+			},
+			{
+				"name": "dep_administrativa",
+				"type": "String"
+			},
+			{
+				"name": "desc_reg_conselho_tutelar",
+				"type": "String"
+			},
+			{
+				"name": "desc_reg_orcamento_part",
+				"type": "String"
+			},
+			{
+				"name": "email",
+				"type": "String"
+			},
+			{
+				"name": "escola_especial",
+				"type": "String"
+			},
+			{
+				"name": "facebook",
+				"type": "String"
+			},
+			{
+				"name": "inep",
+				"type": "String"
+			},
+			{
+				"name": "latitude",
+				"type": "String"
+			},
+			{
+				"name": "logradouro",
+				"type": "String"
+			},
+			{
+				"name": "longitude",
+				"type": "String"
+			},
+			{
+				"name": "mant_apae",
+				"type": "String"
+			},
+			{
+				"name": "mant_empresa_privada",
+				"type": "String"
+			},
+			{
+				"name": "mant_ong",
+				"type": "String"
+			},
+			{
+				"name": "mant_sindicato",
+				"type": "String"
+			},
+			{
+				"name": "mant_sistema_s",
+				"type": "String"
+			},
+			{
+				"name": "nome",
+				"type": "String"
+			},
+			{
+				"name": "numero",
+				"type": "String"
+			},
+			{
+				"name": "reg_conselho_tutelar",
+				"type": "String"
+			},
+			{
+				"name": "reg_orcamento_part",
+				"type": "String"
+			},
+			{
+				"name": "situacao_funcionamento",
+				"type": "String"
+			},
+			{
+				"name": "telefone",
+				"type": "String"
+			},
+			{
+				"name": "tipo",
+				"type": "String"
+			},
+			{
+				"name": "twitter",
+				"type": "String"
+			},
+			{
+				"name": "url_website",
+				"type": "String"
+			},
+			{
+				"name": "UltimaAtualizacao",
+				"type": "String"
+			}
+		]
+	}
+}

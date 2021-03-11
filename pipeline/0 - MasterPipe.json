@@ -49,7 +49,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Loaddataintosqlwh",
+						"referenceName": "Export data from Databricks",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -68,10 +68,6 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "ExportDataToUse",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true
 				}
 			}

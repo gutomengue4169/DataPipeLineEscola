@@ -1,9 +1,9 @@
 {
-	"name": "Loaddataintosqlwh",
+	"name": "Export data from Databricks",
 	"properties": {
 		"activities": [
 			{
-				"name": "LoadData to WH",
+				"name": "Export Data From databricks",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/guto_mengue@hotmail.com/3 - LoadDataSQLWH"
+					"notebookPath": "/Users/guto_mengue@hotmail.com/3 - SaveIntoCSV format"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricksnew",
@@ -24,7 +24,7 @@
 			}
 		],
 		"folder": {
-			"name": "ProjetoEscola/3 - LoadIntoWH"
+			"name": "ProjetoEscola/3 - Export From DataBricks"
 		},
 		"annotations": [],
 		"lastPublishTime": "2021-03-10T23:37:14Z"
