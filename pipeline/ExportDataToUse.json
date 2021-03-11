@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Copy Data from SQL to Blob",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"queryTimeout": "02:00:00",
+						"queryTimeout": "00:02:00",
 						"partitionOption": "None"
 					},
 					"sink": {
@@ -49,8 +49,11 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Dev_Dataset_csv_Staging",
-						"type": "DatasetReference"
+						"referenceName": "DataShareExport",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": "EnderecoEscolasExport.csv"
+						}
 					}
 				]
 			}
