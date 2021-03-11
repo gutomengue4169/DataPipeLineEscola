@@ -312,7 +312,10 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"command": "python get_data_from_api.py",
+							"command": {
+								"value": "python get_data_from_api.py",
+								"type": "Expression"
+							},
 							"resourceLinkedService": {
 								"referenceName": "Dev_DataStorage",
 								"type": "LinkedServiceReference"
@@ -329,6 +332,12 @@
 						}
 					}
 				],
+				"variables": {
+					"FilePython": {
+						"type": "String",
+						"defaultValue": "https://raw.githubusercontent.com/gutomengue4169/DevCodePython/main/get_data_from_api.py"
+					}
+				},
 				"folder": {
 					"name": "ProjetoEscola/1 - GetData"
 				},
