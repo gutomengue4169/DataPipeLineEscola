@@ -36,7 +36,7 @@
 				}
 			},
 			{
-				"name": "run 3 - load data into sql",
+				"name": "3 - Export from Databricks",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -60,7 +60,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "run 3 - load data into sql",
+						"activity": "3 - Export from Databricks",
 						"dependencyConditions": [
 							"Succeeded"
 						]

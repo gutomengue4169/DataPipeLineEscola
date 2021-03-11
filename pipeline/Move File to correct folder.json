@@ -142,7 +142,7 @@
 								"enableLogging": false,
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
-									"fileListPath": "datashare/Temp",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								}
 							}
