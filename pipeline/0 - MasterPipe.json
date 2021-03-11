@@ -68,6 +68,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Move File to correct folder",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			}
