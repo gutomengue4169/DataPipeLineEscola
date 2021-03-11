@@ -1,0 +1,105 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DevDataEscolas"
+		},
+		"AzureDatabricksnew_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricksnew'"
+		},
+		"Dev_DataStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Dev_DataStorage'"
+		},
+		"LinkService_SQL_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LinkService_SQL'"
+		},
+		"datasharestorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'datasharestorage'"
+		},
+		"dev_batchgetdata_accessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessKey' of 'dev_batchgetdata'"
+		},
+		"Dev_DataSource_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dadosabertos.poa.br"
+		},
+		"dev_batchgetdata_properties_typeProperties_accountName": {
+			"type": "string",
+			"defaultValue": "devescola"
+		},
+		"dev_batchgetdata_properties_typeProperties_batchUri": {
+			"type": "string",
+			"defaultValue": "https://devescola.ukwest.batch.azure.com"
+		},
+		"dev_batchgetdata_properties_typeProperties_poolName": {
+			"type": "string",
+			"defaultValue": "dev-school"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "DevDataEscolas_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureDatabricksnew_accessToken": {
+						"value": "[parameters('AzureDatabricksnew_accessToken')]"
+					},
+					"Dev_DataStorage_connectionString": {
+						"value": "[parameters('Dev_DataStorage_connectionString')]"
+					},
+					"LinkService_SQL_connectionString": {
+						"value": "[parameters('LinkService_SQL_connectionString')]"
+					},
+					"datasharestorage_connectionString": {
+						"value": "[parameters('datasharestorage_connectionString')]"
+					},
+					"dev_batchgetdata_accessKey": {
+						"value": "[parameters('dev_batchgetdata_accessKey')]"
+					},
+					"Dev_DataSource_properties_typeProperties_url": {
+						"value": "[parameters('Dev_DataSource_properties_typeProperties_url')]"
+					},
+					"dev_batchgetdata_properties_typeProperties_accountName": {
+						"value": "[parameters('dev_batchgetdata_properties_typeProperties_accountName')]"
+					},
+					"dev_batchgetdata_properties_typeProperties_batchUri": {
+						"value": "[parameters('dev_batchgetdata_properties_typeProperties_batchUri')]"
+					},
+					"dev_batchgetdata_properties_typeProperties_poolName": {
+						"value": "[parameters('dev_batchgetdata_properties_typeProperties_poolName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

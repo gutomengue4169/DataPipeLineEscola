@@ -1,0 +1,685 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DevDataEscolas"
+		},
+		"AzureDatabricksnew_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricksnew'"
+		},
+		"Dev_DataStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Dev_DataStorage'"
+		},
+		"LinkService_SQL_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LinkService_SQL'"
+		},
+		"datasharestorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'datasharestorage'"
+		},
+		"dev_batchgetdata_accessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessKey' of 'dev_batchgetdata'"
+		},
+		"Dev_DataSource_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dadosabertos.poa.br"
+		},
+		"dev_batchgetdata_properties_typeProperties_accountName": {
+			"type": "string",
+			"defaultValue": "devescola"
+		},
+		"dev_batchgetdata_properties_typeProperties_batchUri": {
+			"type": "string",
+			"defaultValue": "https://devescola.ukwest.batch.azure.com"
+		},
+		"dev_batchgetdata_properties_typeProperties_poolName": {
+			"type": "string",
+			"defaultValue": "dev-school"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/0 - MasterPipe')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "run 1 - get data",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "RunPythonGetdata",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "run 2 - load data to spark",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "run 1 - get data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "LoadDataFromBlobToDatabricks",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "run 3 - load data into sql",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "run 2 - load data to spark",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Loaddataintosqlwh",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "RunExportData",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "run 3 - load data into sql",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ExportDataToUse",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"folder": {
+					"name": "ProjetoEscola/0 - Master Pipe"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-03-10T23:50:31Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/RunPythonGetdata')]",
+				"[concat(variables('factoryId'), '/pipelines/LoadDataFromBlobToDatabricks')]",
+				"[concat(variables('factoryId'), '/pipelines/Loaddataintosqlwh')]",
+				"[concat(variables('factoryId'), '/pipelines/ExportDataToUse')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExportDataToUse')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy Data from SQL to Blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "00:02:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".csv"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "GetCurrentDataEscola",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataShareExport",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileName": "EnderecoEscolasExport.csv"
+								}
+							}
+						]
+					}
+				],
+				"folder": {
+					"name": "ProjetoEscola/4 - Export Data "
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-03-10T23:37:17Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/GetCurrentDataEscola')]",
+				"[concat(variables('factoryId'), '/datasets/DataShareExport')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LoadDataFromBlobToDatabricks')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load from Raw to Spark",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/guto_mengue@hotmail.com/2 - LoadDataFromRaw"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricksnew",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"folder": {
+					"name": "ProjetoEscola/2 - Load data to spark"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-03-10T23:37:14Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricksnew')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Loaddataintosqlwh')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "LoadData to WH",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/guto_mengue@hotmail.com/3 - LoadDataSQLWH"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricksnew",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"folder": {
+					"name": "ProjetoEscola/3 - LoadIntoWH"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-03-10T23:37:14Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricksnew')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RunPythonGetdata')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "get data from source",
+						"type": "Custom",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"command": "python get_data_from_api.py",
+							"resourceLinkedService": {
+								"referenceName": "Dev_DataStorage",
+								"type": "LinkedServiceReference"
+							},
+							"folderPath": "dev-code-py",
+							"referenceObjects": {
+								"linkedServices": [],
+								"datasets": []
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "dev_batchgetdata",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"folder": {
+					"name": "ProjetoEscola/1 - GetData"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-03-10T23:50:30Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dev_DataStorage')]",
+				"[concat(variables('factoryId'), '/linkedServices/dev_batchgetdata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataShareExport')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datasharestorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"container": "datashare"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/datasharestorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Dev_Dataset_API_source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dev_DataSource",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": "/api/3/action/datastore_search?resource_id=5579bc8e-1e47-47ef-a06e-9f08da28dec8"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dev_DataSource')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GetCurrentDataEscola')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LinkService_SQL",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "_id",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "abr_nome",
+						"type": "nvarchar"
+					},
+					{
+						"name": "bairro",
+						"type": "nvarchar"
+					},
+					{
+						"name": "blog",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cat_part_comunitaria",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cat_part_confessional",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cat_part_filantropica",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cat_part_privada",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cep",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "codigo",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "convenio_estadual",
+						"type": "nvarchar"
+					},
+					{
+						"name": "convenio_fasc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "convenio_federal",
+						"type": "nvarchar"
+					},
+					{
+						"name": "convenio_municipal",
+						"type": "nvarchar"
+					},
+					{
+						"name": "data_extracao",
+						"type": "nvarchar"
+					},
+					{
+						"name": "dep_administrativa",
+						"type": "nvarchar"
+					},
+					{
+						"name": "desc_reg_conselho_tutelar",
+						"type": "nvarchar"
+					},
+					{
+						"name": "desc_reg_orcamento_part",
+						"type": "nvarchar"
+					},
+					{
+						"name": "email",
+						"type": "nvarchar"
+					},
+					{
+						"name": "escola_especial",
+						"type": "nvarchar"
+					},
+					{
+						"name": "facebook",
+						"type": "nvarchar"
+					},
+					{
+						"name": "inep",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "latitude",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "logradouro",
+						"type": "nvarchar"
+					},
+					{
+						"name": "longitude",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "mant_apae",
+						"type": "nvarchar"
+					},
+					{
+						"name": "mant_empresa_privada",
+						"type": "nvarchar"
+					},
+					{
+						"name": "mant_ong",
+						"type": "nvarchar"
+					},
+					{
+						"name": "mant_sindicato",
+						"type": "nvarchar"
+					},
+					{
+						"name": "mant_sistema_s",
+						"type": "nvarchar"
+					},
+					{
+						"name": "nome",
+						"type": "nvarchar"
+					},
+					{
+						"name": "numero",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "reg_conselho_tutelar",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "reg_orcamento_part",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "situacao_funcionamento",
+						"type": "nvarchar"
+					},
+					{
+						"name": "telefone",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "tipo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "twitter",
+						"type": "nvarchar"
+					},
+					{
+						"name": "url_website",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "RegistroEscolaAtual"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LinkService_SQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDatabricksnew')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-2185228900688454.14.azuredatabricks.net",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDatabricksnew_accessToken')]"
+					},
+					"existingClusterId": "0308-171555-chum793"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Dev_DataSource')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('Dev_DataSource_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Dev_DataStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('Dev_DataStorage_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LinkService_SQL')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('LinkService_SQL_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/datasharestorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('datasharestorage_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dev_batchgetdata')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBatch",
+				"typeProperties": {
+					"accountName": "[parameters('dev_batchgetdata_properties_typeProperties_accountName')]",
+					"accessKey": {
+						"type": "SecureString",
+						"value": "[parameters('dev_batchgetdata_accessKey')]"
+					},
+					"batchUri": "[parameters('dev_batchgetdata_properties_typeProperties_batchUri')]",
+					"poolName": "[parameters('dev_batchgetdata_properties_typeProperties_poolName')]",
+					"linkedServiceName": {
+						"referenceName": "Dev_DataStorage",
+						"type": "LinkedServiceReference"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dev_DataStorage')]"
+			]
+		}
+	]
+}

@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "DevDataEscolas"
+		},
+		"AzureDatabricksnew_accessToken": {
+			"value": ""
+		},
+		"Dev_DataStorage_connectionString": {
+			"value": ""
+		},
+		"LinkService_SQL_connectionString": {
+			"value": ""
+		},
+		"datasharestorage_connectionString": {
+			"value": ""
+		},
+		"dev_batchgetdata_accessKey": {
+			"value": ""
+		},
+		"Dev_DataSource_properties_typeProperties_url": {
+			"value": "https://dadosabertos.poa.br"
+		},
+		"dev_batchgetdata_properties_typeProperties_accountName": {
+			"value": "devescola"
+		},
+		"dev_batchgetdata_properties_typeProperties_batchUri": {
+			"value": "https://devescola.ukwest.batch.azure.com"
+		},
+		"dev_batchgetdata_properties_typeProperties_poolName": {
+			"value": "dev-school"
+		}
+	}
+}
