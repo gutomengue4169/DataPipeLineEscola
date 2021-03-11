@@ -1,0 +1,86 @@
+{
+	"name": "0 - MasterPipe",
+	"properties": {
+		"activities": [
+			{
+				"name": "run 1 - get data",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "RunPythonGetdata",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "run 2 - load data to spark",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "run 1 - get data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "LoadDataFromBlobToDatabricks",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "run 3 - load data into sql",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "run 2 - load data to spark",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Loaddataintosqlwh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "RunExportData",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "run 3 - load data into sql",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ExportDataToUse",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "ProjetoEscola/0 - Master Pipe"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-10T23:50:31Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

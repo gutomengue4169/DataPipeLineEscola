@@ -1,0 +1,12 @@
+{
+	"name": "LinkService_SQL",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=devserverescola.database.windows.net;initial catalog=dev_database_escola;user id=sa-dev",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRFVkRBVEFFU0NPTEFTXzc0ZGM4YTNlLTI3NWUtNDlkNC1iZTAxLTY5NWZhMzBmZDI1YiINCn0="
+		}
+	}
+}

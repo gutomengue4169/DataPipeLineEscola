@@ -1,0 +1,33 @@
+{
+	"name": "Loaddataintosqlwh",
+	"properties": {
+		"activities": [
+			{
+				"name": "LoadData to WH",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/guto_mengue@hotmail.com/3 - LoadDataSQLWH"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksnew",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "ProjetoEscola/3 - LoadIntoWH"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-10T23:37:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

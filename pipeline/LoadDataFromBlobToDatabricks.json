@@ -1,0 +1,33 @@
+{
+	"name": "LoadDataFromBlobToDatabricks",
+	"properties": {
+		"activities": [
+			{
+				"name": "Load from Raw to Spark",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/guto_mengue@hotmail.com/2 - LoadDataFromRaw"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksnew",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "ProjetoEscola/2 - Load data to spark"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-10T23:37:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

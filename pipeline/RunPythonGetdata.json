@@ -1,0 +1,42 @@
+{
+	"name": "RunPythonGetdata",
+	"properties": {
+		"activities": [
+			{
+				"name": "get data from source",
+				"type": "Custom",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"command": "python get_data_from_api.py",
+					"resourceLinkedService": {
+						"referenceName": "Dev_DataStorage",
+						"type": "LinkedServiceReference"
+					},
+					"folderPath": "dev-code-py",
+					"referenceObjects": {
+						"linkedServices": [],
+						"datasets": []
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "dev_batchgetdata",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "ProjetoEscola/1 - GetData"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-03-10T23:50:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

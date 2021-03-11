@@ -1,0 +1,16 @@
+{
+	"name": "Dev_Dataset_API_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Dev_DataSource",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "/api/3/action/datastore_search?resource_id=5579bc8e-1e47-47ef-a06e-9f08da28dec8"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

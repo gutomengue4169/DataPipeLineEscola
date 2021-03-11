@@ -1,0 +1,184 @@
+{
+	"name": "GetCurrentDataEscola",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LinkService_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "_id",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "abr_nome",
+				"type": "nvarchar"
+			},
+			{
+				"name": "bairro",
+				"type": "nvarchar"
+			},
+			{
+				"name": "blog",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cat_part_comunitaria",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cat_part_confessional",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cat_part_filantropica",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cat_part_privada",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cep",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "codigo",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "convenio_estadual",
+				"type": "nvarchar"
+			},
+			{
+				"name": "convenio_fasc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "convenio_federal",
+				"type": "nvarchar"
+			},
+			{
+				"name": "convenio_municipal",
+				"type": "nvarchar"
+			},
+			{
+				"name": "data_extracao",
+				"type": "nvarchar"
+			},
+			{
+				"name": "dep_administrativa",
+				"type": "nvarchar"
+			},
+			{
+				"name": "desc_reg_conselho_tutelar",
+				"type": "nvarchar"
+			},
+			{
+				"name": "desc_reg_orcamento_part",
+				"type": "nvarchar"
+			},
+			{
+				"name": "email",
+				"type": "nvarchar"
+			},
+			{
+				"name": "escola_especial",
+				"type": "nvarchar"
+			},
+			{
+				"name": "facebook",
+				"type": "nvarchar"
+			},
+			{
+				"name": "inep",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "latitude",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "logradouro",
+				"type": "nvarchar"
+			},
+			{
+				"name": "longitude",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "mant_apae",
+				"type": "nvarchar"
+			},
+			{
+				"name": "mant_empresa_privada",
+				"type": "nvarchar"
+			},
+			{
+				"name": "mant_ong",
+				"type": "nvarchar"
+			},
+			{
+				"name": "mant_sindicato",
+				"type": "nvarchar"
+			},
+			{
+				"name": "mant_sistema_s",
+				"type": "nvarchar"
+			},
+			{
+				"name": "nome",
+				"type": "nvarchar"
+			},
+			{
+				"name": "numero",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "reg_conselho_tutelar",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "reg_orcamento_part",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "situacao_funcionamento",
+				"type": "nvarchar"
+			},
+			{
+				"name": "telefone",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "tipo",
+				"type": "nvarchar"
+			},
+			{
+				"name": "twitter",
+				"type": "nvarchar"
+			},
+			{
+				"name": "url_website",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "RegistroEscolaAtual"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
