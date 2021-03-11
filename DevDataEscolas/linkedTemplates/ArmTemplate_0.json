@@ -61,7 +61,7 @@
 						"type": "SecureString",
 						"value": "[parameters('AzureDatabricksnew_accessToken')]"
 					},
-					"existingClusterId": "0308-171555-chum793"
+					"existingClusterId": "0311-143857-hangs816"
 				}
 			},
 			"dependsOn": []
